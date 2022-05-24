@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './styles.css'
 
-export default function NewTask({setShowAddTask, setNotStartedList}) {
+export default function NewTask({setShowAddTask, setNotStartedList, notStartedList}) {
   const token = localStorage.getItem('JWT')
   const initialFormData = {
     name: '',
@@ -20,7 +20,8 @@ export default function NewTask({setShowAddTask, setNotStartedList}) {
     });
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = (event) => {
+    event.preventDefault();
     const options = {
       method: 'POST',
       headers: {
@@ -38,6 +39,11 @@ export default function NewTask({setShowAddTask, setNotStartedList}) {
       .then(res => res.json())
       .then(res => {
         console.log('response:', res)
+        let addedTask = res.createdTask
+        console.log('addedTask', addedTask)
+        addedTask.id = addedTask.id.toString()
+        let notStartedCopy = [...notStartedList, addedTask]
+        setNotStartedList(notStartedCopy)
         setShowAddTask(false)
       })
       .catch((err) => {
@@ -47,6 +53,7 @@ export default function NewTask({setShowAddTask, setNotStartedList}) {
   };
   return (
     <form className='new-task-form' onSubmit={handleSubmit}>
+      <p>New Task</p>
       <label>
         <p>Name</p>
         <input className='task-name' type='text' name='name' value={task.name} onChange={handleChange} />

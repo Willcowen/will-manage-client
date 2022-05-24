@@ -58,8 +58,11 @@ export default function Login() {
 
   return (
     <form className='user-form' onSubmit={handleSubmit}>
-      <div className='logo'>
-        <Logo height='60' width='60' />
+      <div className='top-of-login'>
+        <h1 className='title'>will manage</h1>
+        <div className='logo'>
+          <Logo height='60' width='60' />
+        </div>
       </div>
       <div className='login'>
         <h2>Login</h2>
@@ -72,6 +75,7 @@ export default function Login() {
           value={user.email}
           onChange={handleChange}
           size='small'
+          InputLabelProps={{style: {fontSize: 13}}}
         />
         <TextField
           className='user-form-input'
@@ -82,6 +86,7 @@ export default function Login() {
           value={user.password}
           onChange={handleChange}
           size='small'
+          InputLabelProps={{style: {fontSize: 13}}}
         />
         <Button
           id='user-submit-button'
@@ -89,7 +94,7 @@ export default function Login() {
           variant='contained'
           size='small'
         >
-          Submit
+          Login
         </Button>
         {loginResponse && <p>{loginResponse}</p>}
         <Link

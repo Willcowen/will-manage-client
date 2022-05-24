@@ -10,6 +10,7 @@
 .login, .register {
     display: flex;
     flex-direction: column;
+    align-items: center;
     background-color: white;
     gap: 5px;
     width: 200px;
@@ -19,7 +20,8 @@
     border-radius: 3px;
     height: auto;
     width: 200px;
-    resize: font-size 10px;
 }
+
+
 
 

@@ -53,8 +53,11 @@ export default function Register() {
   console.log('USER:', user);
   return (
     <form className='user-form' onSubmit={handleSubmit}>
-      <div className='logo'>
-        <Logo height='60' width='60' />
+      <div className='top-of-registration'>
+        <h1 className='title'>will manage</h1>
+        <div className='logo'>
+          <Logo height='60' width='60' />
+        </div>
       </div>
       <div className='register'>
         <h2>Register</h2>
@@ -66,6 +69,7 @@ export default function Register() {
           value={user.firstName}
           onChange={handleChange}
           size='small'
+          InputLabelProps={{style: {fontSize: 13}}}
         />
         <TextField
           className='user-form-input'
@@ -75,6 +79,7 @@ export default function Register() {
           value={user.lastName}
           onChange={handleChange}
           size='small'
+          InputLabelProps={{style: {fontSize: 13}}}
         />
         <TextField
           className='user-form-input'
@@ -85,6 +90,7 @@ export default function Register() {
           value={user.email}
           onChange={handleChange}
           size='small'
+          InputLabelProps={{style: {fontSize: 13}}}
         />
         <TextField
           className='user-form-input'
@@ -95,9 +101,10 @@ export default function Register() {
           value={user.password}
           onChange={handleChange}
           size='small'
+          InputLabelProps={{style: {fontSize: 13}}}
         />
-        <Button id='user-submit-button' type='submit' variant='contained'>
-          Submit
+        <Button id='user-submit-button' type='submit' variant='contained' >
+          Register
         </Button>
         <Link
           to='/'

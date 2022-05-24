@@ -31,23 +31,19 @@ export default function TaskBoard() {
       })
       .then(function(json) {
         console.log('tasks returned from database!', json);
-        json.tasks.forEach(function(task) {
-          task.id = task.id.toString();
-          if (task.status === 'not-started') {
-            notStartedList.push(task);
-          }
-          if (task.status === 'in-progress') {
-            inProgressList.push(task);
-          }
-          if (task.status === 'awaiting-review') {
-            awaitingReviewList.push(task);
-          }
-          if (task.status === 'done') {
-            let doneListCopy = [...doneList];
-            doneListCopy.push(task);
-            setDoneList(doneListCopy);
-          }
+        const mappedTasks = json.tasks.map(function(task) {
+          task.id = task.id.toString()
+          return task
         });
+        console.log(mappedTasks)
+        const notStarted = mappedTasks.filter(task => task.status === 'not-started')
+        setNotStartedList(notStarted)
+        const inProgress = mappedTasks.filter(task => task.status === 'in-progress')
+        setInProgressList(inProgress)
+        const awaitingReview = mappedTasks.filter(task => task.status === 'awaiting-review')
+        setAwaitingReviewList(awaitingReview)
+        const done = mappedTasks.filter(task => task.status === 'done')
+        setDoneList(done)
         setDataLoaded(true);
         console.log('doneList', doneList);
       });
@@ -57,7 +53,7 @@ export default function TaskBoard() {
     handleLoadTasks();
   }, []);
 
-  function getStateForList(list) {
+  const getStateForList = (list) => {
     if (list === 'not-started') return [notStartedList, setNotStartedList];
     if (list === 'in-progress') return [inProgressList, setInProgressList];
     if (list === 'awaiting-review')
@@ -65,7 +61,8 @@ export default function TaskBoard() {
     if (list === 'done') return [doneList, setDoneList];
   }
 
-  function handleOnDragEnd(result) {
+  const handleOnDragEnd = (result) => {
+    console.log('result:', result)
     if (!result.destination) return;
     const [source, setSource] = getStateForList(result.source.droppableId);
     const [destination, setDestination] = getStateForList(
@@ -90,6 +87,34 @@ export default function TaskBoard() {
       sourceCopy.splice(result.destination.index, 0, reorderedItem);
       setSource(sourceCopy);
     }
+    handleMove(result)
+  }
+
+  const handleMove = (result) => {
+    const index = result.destination.index;
+    const status = result.destination.droppableId;
+    const taskId = result.draggableId;
+    console.log('taskId:', taskId)
+    console.log('result inside handleMove:', result)
+    const options = {
+      method: 'PATCH',
+      headers: {
+        Authorization: 'Bearer ' + token,
+        'content-type': 'application/json'
+      },
+      body: JSON.stringify({ 
+        index: index,
+        status: status
+      })
+    };
+
+    fetch(`http://localhost:4000/task/${taskId}`, options)
+      .then(function(response) {
+        return response.json();
+      })
+      .then(function(json) {
+        console.log('task updated:', json)
+      });
   }
 
   const handleCreateForm = () => {
@@ -123,133 +148,87 @@ export default function TaskBoard() {
       });
   };
 
-
   return (
     <div>
       <Header />
       <div className='board'>
-      {dataLoaded && (
-        <DragDropContext onDragEnd={handleOnDragEnd}>
-          <div className='column'>
-            <div className='column-head'>
-              <h2 className='title'>Not Started</h2>
+        {dataLoaded && (
+          <DragDropContext onDragEnd={handleOnDragEnd}>
+            <div className='column'>
+              <div className='column-head'>
+                <h2 className='title'>Not Started</h2>
+              </div>
+              <Droppable droppableId='not-started'>
+                {(provided) => (
+                  <ul
+                    className='not-started'
+                    {...provided.droppableProps}
+                    ref={provided.innerRef}
+                    isdragging={console.log(provided)}
+                  >
+                    {notStartedList.map(({ id, name, description }, index) => {
+                      return (
+                        <Draggable
+                          className='on-drag'
+                          key={id}
+                          draggableId={id}
+                          index={index}
+                        >
+                          {(provided) => (
+                            <div className='item-content'>
+                              <li
+                                {...provided.draggableProps}
+                                {...provided.dragHandleProps}
+                                ref={provided.innerRef}
+                              >
+                                <p>
+                                  <strong>{name}</strong>
+                                </p>
+                                <p>{description}</p>
+                                <div className='nav-bar'>
+                                  <EditIcon className='icons' />
+                                  <DeleteIcon
+                                    className='icons'
+                                    onClick={() => handleDelete(id)}
+                                  />
+                                </div>
+                              </li>
+                            </div>
+                          )}
+                        </Draggable>
+                      );
+                    })}
+                    {provided.placeholder}
+                  </ul>
+                )}
+              </Droppable>
+              <div className='add-task'>
+                {!showAddTask && (
+                  <div className='add-new' onClick={handleCreateForm}>
+                    <AddIcon className='add-icon' />
+                  </div>
+                )}
+                {showAddTask && (
+                  <NewTask
+                    setShowAddTask={setShowAddTask}
+                    setNotStartedList={setNotStartedList}
+                    notStartedList={notStartedList}
+                  />
+                )}
+              </div>
             </div>
-            <Droppable droppableId='not-started'>
-              {(provided, snapshot) => (
-                <ul
-                  className='not-started'
-                  {...provided.droppableProps}
-                  ref={provided.innerRef}
-                  isdragging={console.log(provided)}
-                >
-                  
-                  {notStartedList.map(({ id, name, description }, index) => {
-                    return (
-                      <Draggable
-                        className='on-drag'
-                        key={id}
-                        draggableId={id}
-                        index={index}
-                      >
-                        {(provided) => (
-                          <div className='item-content'>
-                            <li
-                              {...provided.draggableProps}
-                              {...provided.dragHandleProps}
-                              ref={provided.innerRef}
-                            >
-                              <p>
-                                <strong>{name}</strong>
-                              </p>
-                              <p>{description}</p>
-                              <div className='nav-bar'>
-                                <EditIcon className='icons' />
-                                <DeleteIcon
-                                  className='icons'
-                                  onClick={() => handleDelete(id)}
-                                />
-                              </div>
-                            </li>
-                          </div>
-                        )}
-                      </Draggable>
-                    );
-                  })}
-                  {provided.placeholder}
-                </ul>
-              )}
-            </Droppable>
-            <div className='add-task'>
-              {!showAddTask && (
-                <div className='add-new' onClick={handleCreateForm}>
-                  <p>Add new..</p>
-                  <AddIcon className='add-icon' />
-                </div>
-              )}
-              {showAddTask && (
-                <NewTask
-                  setShowAddTask={setShowAddTask}
-                  setNotStartedList={setNotStartedList}
-                />
-              )}
-            </div>
-          </div>
-          <div className='column'>
-            <div className='column-head'>
-              <h2 className='title'>In Progress</h2>
-            </div>
-            <Droppable droppableId='in-progress'>
-              {(provided) => (
-                <ul
-                  className='in-progress'
-                  {...provided.droppableProps}
-                  ref={provided.innerRef}
-                >
-                  {inProgressList.map(({ id, name, description }, index) => {
-                    return (
-                      <Draggable key={id} draggableId={id} index={index}>
-                        {(provided) => (
-                          <div className='item-content'>
-                            <li
-                              {...provided.draggableProps}
-                              {...provided.dragHandleProps}
-                              ref={provided.innerRef}
-                            >
-                              <p>
-                                <strong>{name}</strong>
-                              </p>
-                              <p>{description}</p>
-                              <div className='nav-bar'>
-                                <EditIcon className='icons' />
-                                <DeleteIcon
-                                  className='icons'
-                                  onClick={() => handleDelete(id)}
-                                />
-                              </div>
-                            </li>
-                          </div>
-                        )}
-                      </Draggable>
-                    );
-                  })}
-                  {provided.placeholder}
-                </ul>
-              )}
-            </Droppable>
-          </div>
-          <div className='column'>
-            <div className='column-head'>
-              <h2 className='title'>Awaiting Review</h2>
-            </div>
-            <Droppable droppableId='awaiting-review'>
-              {(provided) => (
-                <ul
-                  className='awaiting-review'
-                  {...provided.droppableProps}
-                  ref={provided.innerRef}
-                >
-                  {awaitingReviewList.map(
-                    ({ id, name, description }, index) => {
+            <div className='column'>
+              <div className='column-head'>
+                <h2 className='title'>In Progress</h2>
+              </div>
+              <Droppable droppableId='in-progress'>
+                {(provided) => (
+                  <ul
+                    className='in-progress'
+                    {...provided.droppableProps}
+                    ref={provided.innerRef}
+                  >
+                    {inProgressList.map(({ id, name, description }, index) => {
                       return (
                         <Draggable key={id} draggableId={id} index={index}>
                           {(provided) => (
@@ -275,58 +254,102 @@ export default function TaskBoard() {
                           )}
                         </Draggable>
                       );
-                    }
-                  )}
-                  {provided.placeholder}
-                </ul>
-              )}
-            </Droppable>
-          </div>
-          <div className='column'>
-            <div className='column-head'>
-              <h2 className='title'>Done</h2>
+                    })}
+                    {provided.placeholder}
+                  </ul>
+                )}
+              </Droppable>
             </div>
-            <Droppable droppableId='done'>
-              {(provided) => (
-                <ul
-                  className='done'
-                  {...provided.droppableProps}
-                  ref={provided.innerRef}
-                >
-                  {doneList.map(({ id, name, description }, index) => {
-                    return (
-                      <Draggable key={id} draggableId={id} index={index}>
-                        {(provided) => (
-                          <div className='item-content'>
-                            <li
-                              {...provided.draggableProps}
-                              {...provided.dragHandleProps}
-                              ref={provided.innerRef}
-                            >
-                              <p>
-                                <strong>{name}</strong>
-                              </p>
-                              <p>{description}</p>
-                              <div className='nav-bar'>
-                                <EditIcon className='icons' />
-                                <DeleteIcon
-                                  className='icons'
-                                  onClick={() => handleDelete(id)}
-                                />
+            <div className='column'>
+              <div className='column-head'>
+                <h2 className='title'>Awaiting Review</h2>
+              </div>
+              <Droppable droppableId='awaiting-review'>
+                {(provided) => (
+                  <ul
+                    className='awaiting-review'
+                    {...provided.droppableProps}
+                    ref={provided.innerRef}
+                  >
+                    {awaitingReviewList.map(
+                      ({ id, name, description }, index) => {
+                        return (
+                          <Draggable key={id} draggableId={id} index={index}>
+                            {(provided) => (
+                              <div className='item-content'>
+                                <li
+                                  {...provided.draggableProps}
+                                  {...provided.dragHandleProps}
+                                  ref={provided.innerRef}
+                                >
+                                  <p>
+                                    <strong>{name}</strong>
+                                  </p>
+                                  <p>{description}</p>
+                                  <div className='nav-bar'>
+                                    <EditIcon className='icons' />
+                                    <DeleteIcon
+                                      className='icons'
+                                      onClick={() => handleDelete(id)}
+                                    />
+                                  </div>
+                                </li>
                               </div>
-                            </li>
-                          </div>
-                        )}
-                      </Draggable>
-                    );
-                  })}
-                  {provided.placeholder}
-                </ul>
-              )}
-            </Droppable>
-          </div>
-        </DragDropContext>
-      )}
+                            )}
+                          </Draggable>
+                        );
+                      }
+                    )}
+                    {provided.placeholder}
+                  </ul>
+                )}
+              </Droppable>
+            </div>
+            <div className='column'>
+              <div className='column-head'>
+                <h2 className='title'>Done</h2>
+              </div>
+              <Droppable droppableId='done'>
+                {(provided) => (
+                  <ul
+                    className='done'
+                    {...provided.droppableProps}
+                    ref={provided.innerRef}
+                  >
+                    {doneList.map(({ id, name, description }, index) => {
+                      return (
+                        <Draggable key={id} draggableId={id} index={index}>
+                          {(provided) => (
+                            <div className='item-content'>
+                              <li
+                                {...provided.draggableProps}
+                                {...provided.dragHandleProps}
+                                ref={provided.innerRef}
+                              >
+                                <p>
+                                  <strong>{name}</strong>
+                                </p>
+                                <p>{description}</p>
+                                <div className='nav-bar'>
+                                  <EditIcon className='icons' />
+                                  <DeleteIcon
+                                    className='icons'
+                                    onClick={() => handleDelete(id)}
+                                  />
+                                </div>
+                              </li>
+                            </div>
+                          )}
+                        </Draggable>
+                      );
+                    })}
+                    {provided.placeholder}
+                  </ul>
+                )}
+              </Droppable>
+            </div>
+          </DragDropContext>
+        )}
       </div>
     </div>
   );
