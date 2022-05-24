@@ -1,8 +1,7 @@
 .header {
-    display:grid;
-    grid-template-columns: 200px 200px 200px;
+    display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-around;
     background-color: white;
     border-bottom: 1px solid black;
 }
@@ -26,3 +25,4 @@
     width: 60px;
     padding: 10px;
 }
+

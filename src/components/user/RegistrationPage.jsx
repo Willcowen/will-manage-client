@@ -1,10 +1,10 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 import TextField from '@mui/material/TextField/TextField';
 import Button from '@mui/material/Button';
 import './styles.css';
-import {Link } from 'react-router-dom'
+import { Link } from 'react-router-dom';
+import { ReactComponent as Logo } from '../header/mylogo.svg';
 export default function Register() {
-
   const initialFormData = {
     firstName: '',
     lastName: '',
@@ -18,24 +18,25 @@ export default function Register() {
   const handleSubmit = (event) => {
     event.preventDefault();
     const options = {
-      method: 'POST', 
-      headers : {
-        'Content-Type' : 'application/json'
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,
-        password: user.password
-      })
-    }
+        password: user.password,
+      }),
+    };
 
     fetch('http://localhost:4000/user', options)
-    .then(function(response) {
-      return response.json()
-    }).then(function(json) {
-      console.log("Person created", json)
-    })
+      .then(function(response) {
+        return response.json();
+      })
+      .then(function(json) {
+        console.log('Person created', json);
+      })
       .catch((err) => {
         console.log('Error:', err);
       });
@@ -49,55 +50,65 @@ export default function Register() {
       [name]: value,
     });
   };
-  console.log('USER:', user)
+  console.log('USER:', user);
   return (
     <form className='user-form' onSubmit={handleSubmit}>
+      <div className='logo'>
+        <Logo height='60' width='60' />
+      </div>
       <div className='register'>
-      <h2>Register</h2>
-      <TextField
-        className='user-form-input'
-        label='First Name'
-        variant='outlined'
-        name='firstName'
-        value={user.firstName}
-        onChange={handleChange}
-        size='small'
-      />
-      <TextField
-        className='user-form-input'
-        label='Last Name'
-        variant='outlined'
-        name='lastName'
-        value={user.lastName}
-        onChange={handleChange}
-        size='small'
-      />
-      <TextField
-        className='user-form-input'
-        type='email'
-        label='Email'
-        variant='outlined'
-        name='email'
-        value={user.email}
-        onChange={handleChange}
-        size='small'
-      />
-      <TextField
-        className='user-form-input'
-        type='password'
-        label='Password'
-        variant='outlined'
-        name='password'
-        value={user.password}
-        onChange={handleChange}
-        size='small'
-      />
-      <Button id='user-submit-button' type='submit' variant='contained'>
-        Submit
-      </Button>
-      <Link to='/' style={{ textDecoration: 'none', fontFamily: 'Space Grotesk' }}>
-      Already Registered? Click here to login!
-      </Link>
+        <h2>Register</h2>
+        <TextField
+          className='user-form-input'
+          label='First Name'
+          variant='outlined'
+          name='firstName'
+          value={user.firstName}
+          onChange={handleChange}
+          size='small'
+        />
+        <TextField
+          className='user-form-input'
+          label='Last Name'
+          variant='outlined'
+          name='lastName'
+          value={user.lastName}
+          onChange={handleChange}
+          size='small'
+        />
+        <TextField
+          className='user-form-input'
+          type='email'
+          label='Email'
+          variant='outlined'
+          name='email'
+          value={user.email}
+          onChange={handleChange}
+          size='small'
+        />
+        <TextField
+          className='user-form-input'
+          type='password'
+          label='Password'
+          variant='outlined'
+          name='password'
+          value={user.password}
+          onChange={handleChange}
+          size='small'
+        />
+        <Button id='user-submit-button' type='submit' variant='contained'>
+          Submit
+        </Button>
+        <Link
+          to='/'
+          style={{
+            textDecoration: 'none',
+            fontFamily: 'Space Grotesk',
+            fontSize: '12px',
+          }}
+        >
+          <p>Already Registered? Click here to login!</p>
+        </Link>
       </div>
     </form>
   );

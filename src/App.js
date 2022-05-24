@@ -11,7 +11,7 @@ export default function App() {
     <div className="app">
     <Router>
       <div>
-        <Header />
+        {/* <Header /> */}
         <Routes>
           <Route path='/register' element={<Register />} />
           <Route exact path='/' element={<Login />} />

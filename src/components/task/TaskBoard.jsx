@@ -5,7 +5,7 @@ import { ReactComponent as EditIcon } from '../../images/edit.svg';
 import { ReactComponent as DeleteIcon } from '../../images/delete.svg';
 import { ReactComponent as AddIcon } from '../../images/add.svg';
 import NewTask from './NewTask';
-import Header from '../header/header'
+import Header from '../header/header';
 
 export default function TaskBoard() {
   const [notStartedList, setNotStartedList] = useState([]);
@@ -13,7 +13,7 @@ export default function TaskBoard() {
   const [awaitingReviewList, setAwaitingReviewList] = useState([]);
   const [doneList, setDoneList] = useState([]);
   const [dataLoaded, setDataLoaded] = useState(false);
-  const [showAddTask, setShowAddTask] = useState(false)
+  const [showAddTask, setShowAddTask] = useState(false);
   const token = localStorage.getItem('JWT');
   console.log('token:', token);
 
@@ -93,24 +93,56 @@ export default function TaskBoard() {
   }
 
   const handleCreateForm = () => {
-    setShowAddTask(true)
+    setShowAddTask(true);
   };
 
+  const handleDelete = (taskId) => {
+    console.log('inside delete, task:', taskId);
+
+    const options = {
+      method: 'DELETE',
+      headers: {
+        Authorization: 'Bearer ' + token,
+      },
+    };
+
+    fetch(`http://localhost:4000/task/${taskId}`, options)
+      .then(function(response) {
+        return response.json();
+      })
+      .then(function(json) {
+        console.log('Task deleted', json);
+        const list = json.taskToDelete[0].status;
+        console.log('task status', json.taskToDelete[0].status);
+        const [listState, setListState] = getStateForList(list);
+        let listCopy = [...listState];
+        const foundTaskIndex = listCopy.findIndex((task) => task.id === taskId);
+        listCopy.splice(foundTaskIndex, 1);
+        setListState(listCopy);
+        console.log('foundTaskIndex', foundTaskIndex);
+      });
+  };
+
+
   return (
-    <div className='board'>
+    <div>
+      <Header />
+      <div className='board'>
       {dataLoaded && (
         <DragDropContext onDragEnd={handleOnDragEnd}>
           <div className='column'>
+            <div className='column-head'>
+              <h2 className='title'>Not Started</h2>
+            </div>
             <Droppable droppableId='not-started'>
-              {(provided) => (
+              {(provided, snapshot) => (
                 <ul
                   className='not-started'
                   {...provided.droppableProps}
                   ref={provided.innerRef}
+                  isdragging={console.log(provided)}
                 >
-                  <div className='column-head'>
-                    <h2 className='title'>Not Started</h2>
-                  </div>
+                  
                   {notStartedList.map(({ id, name, description }, index) => {
                     return (
                       <Draggable
@@ -132,7 +164,10 @@ export default function TaskBoard() {
                               <p>{description}</p>
                               <div className='nav-bar'>
                                 <EditIcon className='icons' />
-                                <DeleteIcon className='icons' />
+                                <DeleteIcon
+                                  className='icons'
+                                  onClick={() => handleDelete(id)}
+                                />
                               </div>
                             </li>
                           </div>
@@ -144,17 +179,25 @@ export default function TaskBoard() {
                 </ul>
               )}
             </Droppable>
-            <div className="add-task">
-              {!showAddTask && <div className='add-new' onClick={handleCreateForm}>
-                <p>
-                  Add new..
-                </p>
-                <AddIcon className='add-icon' />
-              </div>}
-              {showAddTask && <NewTask setShowAddTask={setShowAddTask} setNotStartedList={setNotStartedList} />}
+            <div className='add-task'>
+              {!showAddTask && (
+                <div className='add-new' onClick={handleCreateForm}>
+                  <p>Add new..</p>
+                  <AddIcon className='add-icon' />
+                </div>
+              )}
+              {showAddTask && (
+                <NewTask
+                  setShowAddTask={setShowAddTask}
+                  setNotStartedList={setNotStartedList}
+                />
+              )}
             </div>
           </div>
           <div className='column'>
+            <div className='column-head'>
+              <h2 className='title'>In Progress</h2>
+            </div>
             <Droppable droppableId='in-progress'>
               {(provided) => (
                 <ul
@@ -162,9 +205,6 @@ export default function TaskBoard() {
                   {...provided.droppableProps}
                   ref={provided.innerRef}
                 >
-                  <div className='column-head'>
-                    <h2 className='title'>In Progress</h2>
-                  </div>
                   {inProgressList.map(({ id, name, description }, index) => {
                     return (
                       <Draggable key={id} draggableId={id} index={index}>
@@ -181,7 +221,10 @@ export default function TaskBoard() {
                               <p>{description}</p>
                               <div className='nav-bar'>
                                 <EditIcon className='icons' />
-                                <DeleteIcon className='icons' />
+                                <DeleteIcon
+                                  className='icons'
+                                  onClick={() => handleDelete(id)}
+                                />
                               </div>
                             </li>
                           </div>
@@ -195,6 +238,9 @@ export default function TaskBoard() {
             </Droppable>
           </div>
           <div className='column'>
+            <div className='column-head'>
+              <h2 className='title'>Awaiting Review</h2>
+            </div>
             <Droppable droppableId='awaiting-review'>
               {(provided) => (
                 <ul
@@ -202,9 +248,6 @@ export default function TaskBoard() {
                   {...provided.droppableProps}
                   ref={provided.innerRef}
                 >
-                  <div className='column-head'>
-                    <h2 className='title'>Awaiting Review</h2>
-                  </div>
                   {awaitingReviewList.map(
                     ({ id, name, description }, index) => {
                       return (
@@ -222,7 +265,10 @@ export default function TaskBoard() {
                                 <p>{description}</p>
                                 <div className='nav-bar'>
                                   <EditIcon className='icons' />
-                                  <DeleteIcon className='icons' />
+                                  <DeleteIcon
+                                    className='icons'
+                                    onClick={() => handleDelete(id)}
+                                  />
                                 </div>
                               </li>
                             </div>
@@ -237,6 +283,9 @@ export default function TaskBoard() {
             </Droppable>
           </div>
           <div className='column'>
+            <div className='column-head'>
+              <h2 className='title'>Done</h2>
+            </div>
             <Droppable droppableId='done'>
               {(provided) => (
                 <ul
@@ -244,9 +293,6 @@ export default function TaskBoard() {
                   {...provided.droppableProps}
                   ref={provided.innerRef}
                 >
-                  <div className='column-head'>
-                    <h2 className='title'>Done</h2>
-                  </div>
                   {doneList.map(({ id, name, description }, index) => {
                     return (
                       <Draggable key={id} draggableId={id} index={index}>
@@ -263,7 +309,10 @@ export default function TaskBoard() {
                               <p>{description}</p>
                               <div className='nav-bar'>
                                 <EditIcon className='icons' />
-                                <DeleteIcon className='icons' />
+                                <DeleteIcon
+                                  className='icons'
+                                  onClick={() => handleDelete(id)}
+                                />
                               </div>
                             </li>
                           </div>
@@ -278,6 +327,7 @@ export default function TaskBoard() {
           </div>
         </DragDropContext>
       )}
+      </div>
     </div>
   );
 }

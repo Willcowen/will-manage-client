@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import TextField from '@mui/material/TextField/TextField';
 import Button from '@mui/material/Button';
 import './styles.css';
-import { useNavigate, Link } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom';
+import { ReactComponent as Logo } from '../header/mylogo.svg';
 
 export default function Login() {
   const initialFormData = {
@@ -11,7 +12,7 @@ export default function Login() {
   };
   const [user, setUser] = useState(initialFormData);
   const [loginResponse, setLoginResponse] = useState(false);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const handleChange = (event) => {
     event.preventDefault();
@@ -41,10 +42,10 @@ export default function Login() {
         res.json().then((json) => {
           if (res.ok) {
             console.log('RESPONSE OK, TOKEN:', json.data);
-            localStorage.setItem('JWT', json.data)
-            navigate('/board')
+            localStorage.setItem('JWT', json.data);
+            navigate('/board');
           } else {
-            setLoginResponse(json.error)
+            setLoginResponse(json.error);
             console.log('Invalid response code:', res.status);
             console.log('Invalid response data:', json.error);
           }
@@ -57,35 +58,50 @@ export default function Login() {
 
   return (
     <form className='user-form' onSubmit={handleSubmit}>
+      <div className='logo'>
+        <Logo height='60' width='60' />
+      </div>
       <div className='login'>
-      <h2>Login</h2>
-      <TextField
-        className='user-form-input'
-        type='email'
-        label='Email'
-        variant='outlined'
-        name='email'
-        value={user.email}
-        onChange={handleChange}
-        size='small'
-      />
-      <TextField
-        className='user-form-input'
-        type='password'
-        label='Password'
-        variant='outlined'
-        name='password'
-        value={user.password}
-        onChange={handleChange}
-        size='small'
-      />
-      <Button id='user-submit-button' type='submit' variant='contained' size='small'>
-        Submit
-      </Button>
-      {loginResponse && <p>{loginResponse}</p>}
-      <Link to='/register' style={{ textDecoration: 'none', fontFamily: 'Space Grotesk' }}>
-      Not yet registered? Click here!
-      </Link>
+        <h2>Login</h2>
+        <TextField
+          className='user-form-input'
+          type='email'
+          label='Email'
+          variant='outlined'
+          name='email'
+          value={user.email}
+          onChange={handleChange}
+          size='small'
+        />
+        <TextField
+          className='user-form-input'
+          type='password'
+          label='Password'
+          variant='outlined'
+          name='password'
+          value={user.password}
+          onChange={handleChange}
+          size='small'
+        />
+        <Button
+          id='user-submit-button'
+          type='submit'
+          variant='contained'
+          size='small'
+        >
+          Submit
+        </Button>
+        {loginResponse && <p>{loginResponse}</p>}
+        <Link
+          to='/register'
+          style={{
+            textDecoration: 'none',
+            fontFamily: 'Space Grotesk',
+            fontSize: '12px',
+          }}
+        >
+          <p>Not yet registered? Click here!</p>
+        </Link>
       </div>
     </form>
   );
