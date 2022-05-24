@@ -1,0 +1,28 @@
+.header {
+    display:grid;
+    grid-template-columns: 200px 200px 200px;
+    align-items: center;
+    justify-content: space-between;
+    background-color: white;
+    border-bottom: 1px solid black;
+}
+
+.title {
+    display: inline-block;
+    font-family: 'Space Grotesk', sans-serif;
+    color: darkblue;
+}
+
+.nav {
+    display: flex;
+    flex-direction: row;
+    gap: 30px;
+    list-style-type: none;
+    text-decoration: bold;
+}
+
+.logo {
+    height: 60px;
+    width: 60px;
+    padding: 10px;
+}

@@ -1,0 +1,103 @@
+.board {
+    min-width: 90%;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px; 
+    font-size: 10px;
+    text-decoration: none;
+    margin: 15px;
+}
+
+ul { 
+    padding-inline-start: 0px;
+}
+
+.column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: white;
+    border: rgb(63, 93, 103) solid 1px;
+    border-radius: 3px;
+    padding-left: 5px;
+    padding-right: 5px;
+    font-family: 'Space Grotesk', sans-serif;
+    height: minmax(min-content, 100%);
+}
+
+.column-head {
+    font-style: italic;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    margin-bottom: 5px;
+}
+
+
+.item-content {
+    list-style: none;
+    border-top: 1px solid grey;
+    text-decoration: none;
+    background-color: rgba(255, 255, 255, 0.295);
+    padding: 10px;
+}
+
+.on-drag {
+    background-color: red;
+}
+
+.nav-bar, .add-new {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 5px;
+    margin: 5px;
+}
+.add-task {
+    display: flex;
+    justify-content: flex-start;
+    color: black;
+    border-top: 1px solid grey;
+}
+
+.add-new {
+    display: flex;
+    flex-direction: row;
+    background-color: white;
+    border: rgb(63, 93, 103) solid 1px;
+    border-radius: 2px;
+    padding: 0px 5px;
+    text-align: center;
+    transition-duration: 0.4s;
+    cursor: pointer;
+  }
+
+.icons, .add-icon {
+    height: 10px;
+    width: 10px;
+    fill: darkblue;
+}
+
+.new-task-form {
+    display: flex;
+    flex-flow: column wrap;
+    padding: 10px;
+    align-items: flex-start;
+    font-weight: bold;
+}
+
+.task-description, .task-name {
+    font-size: inherit;
+}
+.task-description {
+    height: 40px;
+}
+.task-submit {
+    font-size: inherit;
+    margin-top: 10px;
+}
+
+
+
+
+  
