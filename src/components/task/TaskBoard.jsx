@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import './styles.css';
-import { ReactComponent as EditIcon } from '../../images/edit.svg';
-import { ReactComponent as DeleteIcon } from '../../images/delete.svg';
 import { ReactComponent as AddIcon } from '../../images/add.svg';
 import NewTask from './NewTask';
 import Header from '../header/header';
+import ListItem from './ListItem';
 
 export default function TaskBoard() {
   const [notStartedList, setNotStartedList] = useState([]);
@@ -14,8 +13,8 @@ export default function TaskBoard() {
   const [doneList, setDoneList] = useState([]);
   const [dataLoaded, setDataLoaded] = useState(false);
   const [showAddTask, setShowAddTask] = useState(false);
+  const [editFlag, setEditFlag] = useState(false);
   const token = localStorage.getItem('JWT');
-  console.log('token:', token);
 
   const handleLoadTasks = () => {
     const options = {
@@ -30,22 +29,26 @@ export default function TaskBoard() {
         return response.json();
       })
       .then(function(json) {
-        console.log('tasks returned from database!', json);
         const mappedTasks = json.tasks.map(function(task) {
-          task.id = task.id.toString()
-          return task
+          task.id = task.id.toString();
+          return task;
         });
-        console.log(mappedTasks)
-        const notStarted = mappedTasks.filter(task => task.status === 'not-started')
-        setNotStartedList(notStarted)
-        const inProgress = mappedTasks.filter(task => task.status === 'in-progress')
-        setInProgressList(inProgress)
-        const awaitingReview = mappedTasks.filter(task => task.status === 'awaiting-review')
-        setAwaitingReviewList(awaitingReview)
-        const done = mappedTasks.filter(task => task.status === 'done')
-        setDoneList(done)
+
+        const notStarted = mappedTasks.filter(
+          (task) => task.status === 'not-started'
+        );
+        setNotStartedList(notStarted);
+        const inProgress = mappedTasks.filter(
+          (task) => task.status === 'in-progress'
+        );
+        setInProgressList(inProgress);
+        const awaitingReview = mappedTasks.filter(
+          (task) => task.status === 'awaiting-review'
+        );
+        setAwaitingReviewList(awaitingReview);
+        const done = mappedTasks.filter((task) => task.status === 'done');
+        setDoneList(done);
         setDataLoaded(true);
-        console.log('doneList', doneList);
       });
   };
 
@@ -59,11 +62,11 @@ export default function TaskBoard() {
     if (list === 'awaiting-review')
       return [awaitingReviewList, setAwaitingReviewList];
     if (list === 'done') return [doneList, setDoneList];
-  }
+  };
 
   const handleOnDragEnd = (result) => {
-    const patchArr = []
-    console.log('result:', result)
+    const patchArr = [];
+
     if (!result.destination) return;
     const [source, setSource] = getStateForList(result.source.droppableId);
     const [destination, setDestination] = getStateForList(
@@ -82,74 +85,58 @@ export default function TaskBoard() {
       let destinationCopy = [...destination];
       destinationCopy.splice(result.destination.index, 0, reorderedItem);
       setDestination(destinationCopy);
-      destinationArr = destinationCopy
-      sourceArr = sourceCopy
-      console.log('destinationArr:', destinationArr)
+      destinationArr = destinationCopy;
+      sourceArr = sourceCopy;
+
       for (let i = 0; i < destinationArr.length; i++) {
-        const task = destinationArr[i]
+        const task = destinationArr[i];
         if (task.index !== i) {
-          task.index = i
+          task.index = i;
         }
       }
-      destinationArr.forEach(function(element){
-        return patchArr.push(element)
-      })
+      destinationArr.forEach(function(element) {
+        return patchArr.push(element);
+      });
     } else {
       let sourceCopy = [...source];
       const [reorderedItem] = sourceCopy.splice(result.source.index, 1);
       reorderedItem.index = result.destination.index;
       sourceCopy.splice(result.destination.index, 0, reorderedItem);
       setSource(sourceCopy);
-      sourceArr = sourceCopy
+      sourceArr = sourceCopy;
     }
-    console.log('sourceArr:', sourceArr)
-    
     for (let i = 0; i < sourceArr.length; i++) {
-      const task = sourceArr[i]
+      const task = sourceArr[i];
       if (task.index !== i) {
-        task.index = i
+        task.index = i;
       }
     }
-    console.log('destinationArr after loop:', destinationArr)
-    console.log('sourceArr after loop:', sourceArr)
-    //check if the item's index in the array is the same as the index key.
-
-    // handleMove(result)
-    sourceArr.forEach(function(element){
-      return patchArr.push(element)
-    })
-    handleMoveTwo(patchArr)
-  }
+    sourceArr.forEach(function(element) {
+      return patchArr.push(element);
+    });
+    handleMoveTwo(patchArr);
+  };
 
   const handleMoveTwo = (patchArr) => {
-    console.log('arr for patch request:', patchArr)
     const options = {
       method: 'PATCH',
       headers: {
         Authorization: 'Bearer ' + token,
-        'content-type': 'application/json'
+        'content-type': 'application/json',
       },
-      body: JSON.stringify(
-        patchArr
-      )
+      body: JSON.stringify(patchArr),
     };
 
-    fetch(`http://localhost:4000/tasks`, options)
-      .then(function(response) {
-        return response.json();
-      })
-      .then(function(json) {
-        console.log('task updated:', json)
-      });
-  }
+    fetch(`http://localhost:4000/tasks`, options).then(function(response) {
+      return response.json();
+    });
+  };
 
   const handleCreateForm = () => {
     setShowAddTask(true);
   };
 
   const handleDelete = (taskId) => {
-    console.log('inside delete, task:', taskId);
-
     const options = {
       method: 'DELETE',
       headers: {
@@ -162,16 +149,18 @@ export default function TaskBoard() {
         return response.json();
       })
       .then(function(json) {
-        console.log('Task deleted', json);
         const list = json.taskToDelete[0].status;
-        console.log('task status', json.taskToDelete[0].status);
+
         const [listState, setListState] = getStateForList(list);
         let listCopy = [...listState];
         const foundTaskIndex = listCopy.findIndex((task) => task.id === taskId);
         listCopy.splice(foundTaskIndex, 1);
         setListState(listCopy);
-        console.log('foundTaskIndex', foundTaskIndex);
       });
+  };
+
+  const handleEdit = (event, taskId) => {
+    setEditFlag({ taskId: taskId });
   };
 
   return (
@@ -190,38 +179,21 @@ export default function TaskBoard() {
                     className='not-started'
                     {...provided.droppableProps}
                     ref={provided.innerRef}
-                    isdragging={console.log(provided)}
                   >
                     {notStartedList.map(({ id, name, description }, index) => {
                       return (
-                        <Draggable
-                          className='on-drag'
-                          key={id}
-                          draggableId={id}
+                        <ListItem
+                          key={`not-started-list${id}`}
+                          id={id}
+                          name={name}
+                          description={description}
                           index={index}
-                        >
-                          {(provided) => (
-                            <div className='item-content'>
-                              <li
-                                {...provided.draggableProps}
-                                {...provided.dragHandleProps}
-                                ref={provided.innerRef}
-                              >
-                                <p>
-                                  <strong>{name}</strong>
-                                </p>
-                                <p>{description}</p>
-                                <div className='nav-bar'>
-                                  <EditIcon className='icons' />
-                                  <DeleteIcon
-                                    className='icons'
-                                    onClick={() => handleDelete(id)}
-                                  />
-                                </div>
-                              </li>
-                            </div>
-                          )}
-                        </Draggable>
+                          handleEdit={handleEdit}
+                          handleDelete={handleDelete}
+                          editFlag={editFlag}
+                          setEditFlag={setEditFlag}
+                          handleLoadTasks={handleLoadTasks}
+                        />
                       );
                     })}
                     {provided.placeholder}
@@ -256,29 +228,18 @@ export default function TaskBoard() {
                   >
                     {inProgressList.map(({ id, name, description }, index) => {
                       return (
-                        <Draggable key={id} draggableId={id} index={index}>
-                          {(provided) => (
-                            <div className='item-content'>
-                              <li
-                                {...provided.draggableProps}
-                                {...provided.dragHandleProps}
-                                ref={provided.innerRef}
-                              >
-                                <p>
-                                  <strong>{name}</strong>
-                                </p>
-                                <p>{description}</p>
-                                <div className='nav-bar'>
-                                  <EditIcon className='icons' />
-                                  <DeleteIcon
-                                    className='icons'
-                                    onClick={() => handleDelete(id)}
-                                  />
-                                </div>
-                              </li>
-                            </div>
-                          )}
-                        </Draggable>
+                        <ListItem
+                          key={`in-progress-list${id}`}
+                          id={id}
+                          name={name}
+                          description={description}
+                          index={index}
+                          handleEdit={handleEdit}
+                          handleDelete={handleDelete}
+                          editFlag={editFlag}
+                          setEditFlag={setEditFlag}
+                          handleLoadTasks={handleLoadTasks}
+                        />
                       );
                     })}
                     {provided.placeholder}
@@ -300,29 +261,18 @@ export default function TaskBoard() {
                     {awaitingReviewList.map(
                       ({ id, name, description }, index) => {
                         return (
-                          <Draggable key={id} draggableId={id} index={index}>
-                            {(provided) => (
-                              <div className='item-content'>
-                                <li
-                                  {...provided.draggableProps}
-                                  {...provided.dragHandleProps}
-                                  ref={provided.innerRef}
-                                >
-                                  <p>
-                                    <strong>{name}</strong>
-                                  </p>
-                                  <p>{description}</p>
-                                  <div className='nav-bar'>
-                                    <EditIcon className='icons' />
-                                    <DeleteIcon
-                                      className='icons'
-                                      onClick={() => handleDelete(id)}
-                                    />
-                                  </div>
-                                </li>
-                              </div>
-                            )}
-                          </Draggable>
+                          <ListItem
+                            key={`awaiting-review-list${id}`}
+                            id={id}
+                            name={name}
+                            description={description}
+                            index={index}
+                            handleEdit={handleEdit}
+                            handleDelete={handleDelete}
+                            editFlag={editFlag}
+                            setEditFlag={setEditFlag}
+                            handleLoadTasks={handleLoadTasks}
+                          />
                         );
                       }
                     )}
@@ -344,29 +294,18 @@ export default function TaskBoard() {
                   >
                     {doneList.map(({ id, name, description }, index) => {
                       return (
-                        <Draggable key={id} draggableId={id} index={index}>
-                          {(provided) => (
-                            <div className='item-content'>
-                              <li
-                                {...provided.draggableProps}
-                                {...provided.dragHandleProps}
-                                ref={provided.innerRef}
-                              >
-                                <p>
-                                  <strong>{name}</strong>
-                                </p>
-                                <p>{description}</p>
-                                <div className='nav-bar'>
-                                  <EditIcon className='icons' />
-                                  <DeleteIcon
-                                    className='icons'
-                                    onClick={() => handleDelete(id)}
-                                  />
-                                </div>
-                              </li>
-                            </div>
-                          )}
-                        </Draggable>
+                        <ListItem
+                          key={`done-list${id}`}
+                          id={id}
+                          name={name}
+                          description={description}
+                          index={index}
+                          handleEdit={handleEdit}
+                          handleDelete={handleDelete}
+                          editFlag={editFlag}
+                          setEditFlag={setEditFlag}
+                          handleLoadTasks={handleLoadTasks}
+                        />
                       );
                     })}
                     {provided.placeholder}

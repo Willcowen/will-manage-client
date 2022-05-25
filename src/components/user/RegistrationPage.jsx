@@ -2,9 +2,10 @@ import React, { useState } from 'react';
 import TextField from '@mui/material/TextField/TextField';
 import Button from '@mui/material/Button';
 import './styles.css';
-import { Link } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { ReactComponent as Logo } from '../header/mylogo.svg';
 export default function Register() {
+  const navigate = useNavigate();
   const initialFormData = {
     firstName: '',
     lastName: '',
@@ -13,8 +14,7 @@ export default function Register() {
   };
 
   const [user, setUser] = useState(initialFormData);
-  // const [registerResponse, setRegisterResponse] = useState(false)
-
+ 
   const handleSubmit = (event) => {
     event.preventDefault();
     const options = {
@@ -40,6 +40,7 @@ export default function Register() {
       .catch((err) => {
         console.log('Error:', err);
       });
+      navigate('/')
   };
 
   const handleChange = (event) => {

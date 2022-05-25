@@ -1,17 +1,42 @@
 import React, { useState } from 'react';
-import './styles.css';
 
-export default function NewTask({
-  setShowAddTask,
-  setNotStartedList,
-  notStartedList,
+export default function EditTask({
+  name,
+  description,
+  taskId,
+  setEditFlag,
+  handleLoadTasks,
 }) {
   const token = localStorage.getItem('JWT');
   const initialFormData = {
-    name: '',
-    description: '',
+    name: name,
+    description: description,
   };
   const [task, setTask] = useState(initialFormData);
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const options = {
+      method: 'PATCH',
+      headers: {
+        Authorization: 'Bearer ' + token,
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify({
+        name: task.name,
+        description: task.description,
+      }),
+    };
+
+    fetch(`http://localhost:4000/task/${taskId}`, options)
+      .then(function(response) {
+        return response.json();
+      })
+      .then(function(json) {
+        handleLoadTasks();
+      });
+    setEditFlag(false);
+  };
 
   const handleChange = (event) => {
     event.preventDefault();
@@ -23,40 +48,12 @@ export default function NewTask({
     });
   };
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const options = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + token,
-      },
-      body: JSON.stringify({
-        name: task.name,
-        description: task.description,
-        status: 'not-started',
-      }),
-    };
-
-    fetch('http://localhost:4000/task', options)
-      .then((res) => res.json())
-      .then((res) => {
-        let addedTask = res.createdTask;
-
-        addedTask.id = addedTask.id.toString();
-        let notStartedCopy = [...notStartedList, addedTask];
-        setNotStartedList(notStartedCopy);
-        setShowAddTask(false);
-      })
-      .catch((err) => {
-        console.log('Error:', err);
-      });
-  };
   return (
-    <form className='new-task-form' onSubmit={handleSubmit}>
-      <p>New Task</p>
+    <form className='edit-task-form' onSubmit={handleSubmit}>
+      <p>
+        <strong>Edit Task</strong>
+      </p>
       <label>
-        <p>Name</p>
         <input
           className='task-name'
           type='text'
@@ -66,7 +63,6 @@ export default function NewTask({
         />
       </label>
       <label>
-        <p>Description</p>
         <input
           className='task-description'
           type='text'
