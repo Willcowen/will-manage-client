@@ -62,13 +62,15 @@ export default function TaskBoard() {
   }
 
   const handleOnDragEnd = (result) => {
+    const patchArr = []
     console.log('result:', result)
     if (!result.destination) return;
     const [source, setSource] = getStateForList(result.source.droppableId);
     const [destination, setDestination] = getStateForList(
       result.destination.droppableId
     );
-
+    let sourceArr;
+    let destinationArr;
     if (result.destination.droppableId !== result.source.droppableId) {
       let sourceCopy = source.filter((item) => item.id !== result.draggableId);
       const reorderedItem = source.find(
@@ -80,35 +82,59 @@ export default function TaskBoard() {
       let destinationCopy = [...destination];
       destinationCopy.splice(result.destination.index, 0, reorderedItem);
       setDestination(destinationCopy);
+      destinationArr = destinationCopy
+      sourceArr = sourceCopy
+      console.log('destinationArr:', destinationArr)
+      for (let i = 0; i < destinationArr.length; i++) {
+        const task = destinationArr[i]
+        if (task.index !== i) {
+          task.index = i
+        }
+      }
+      destinationArr.forEach(function(element){
+        return patchArr.push(element)
+      })
     } else {
       let sourceCopy = [...source];
       const [reorderedItem] = sourceCopy.splice(result.source.index, 1);
       reorderedItem.index = result.destination.index;
       sourceCopy.splice(result.destination.index, 0, reorderedItem);
       setSource(sourceCopy);
+      sourceArr = sourceCopy
     }
-    handleMove(result)
+    console.log('sourceArr:', sourceArr)
+    
+    for (let i = 0; i < sourceArr.length; i++) {
+      const task = sourceArr[i]
+      if (task.index !== i) {
+        task.index = i
+      }
+    }
+    console.log('destinationArr after loop:', destinationArr)
+    console.log('sourceArr after loop:', sourceArr)
+    //check if the item's index in the array is the same as the index key.
+
+    // handleMove(result)
+    sourceArr.forEach(function(element){
+      return patchArr.push(element)
+    })
+    handleMoveTwo(patchArr)
   }
 
-  const handleMove = (result) => {
-    const index = result.destination.index;
-    const status = result.destination.droppableId;
-    const taskId = result.draggableId;
-    console.log('taskId:', taskId)
-    console.log('result inside handleMove:', result)
+  const handleMoveTwo = (patchArr) => {
+    console.log('arr for patch request:', patchArr)
     const options = {
       method: 'PATCH',
       headers: {
         Authorization: 'Bearer ' + token,
         'content-type': 'application/json'
       },
-      body: JSON.stringify({ 
-        index: index,
-        status: status
-      })
+      body: JSON.stringify(
+        patchArr
+      )
     };
 
-    fetch(`http://localhost:4000/task/${taskId}`, options)
+    fetch(`http://localhost:4000/tasks`, options)
       .then(function(response) {
         return response.json();
       })
@@ -264,7 +290,7 @@ export default function TaskBoard() {
               <div className='column-head'>
                 <h2 className='title'>Awaiting Review</h2>
               </div>
-              <Droppable droppableId='awaiting-review'>
+              <Droppable droppableId='awaiting-review' className='droppable'>
                 {(provided) => (
                   <ul
                     className='awaiting-review'

@@ -37,7 +37,7 @@ ul {
 
 .item-content {
     list-style: none;
-    border-top: 1px solid grey;
+    /* border-top: 1px solid grey; */
     text-decoration: none;
     background-color: rgba(255, 255, 255, 0.295);
     padding: 10px;
@@ -104,6 +104,11 @@ ul {
 .task-submit {
     font-size: inherit;
     margin-top: 10px;
+}
+
+.awaiting-review, .not-started, .in-progress, .done {
+    background-color: rgba(173, 216, 230, 0.544);
+    border: 1px solid black;
 }
 
 
