@@ -5,17 +5,17 @@ I've created a project management tool, which allows users to register, login an
 
 *Screenshots of the application.*
 
-Register
+Register!
 
-![](src%5Cscreenshots%5CRegister.png)
+![Register](https://user-images.githubusercontent.com/91130907/170462471-68115ba0-f660-415e-a501-862c79c429dd.png)
 
 Login
 
-![](src%5Cscreenshots%5CLogin.png)
+[Login](https://user-images.githubusercontent.com/91130907/170462304-286f4bba-1e0c-444a-81e1-78d5f4b00855.png)
 
 App
 
-![](src%5Cscreenshots%5Capp-main.png)
+![app-main](https://user-images.githubusercontent.com/91130907/170462496-ed39b0cc-d203-4814-992d-22fc57418296.png)
 
 *Setup instructions*
 
