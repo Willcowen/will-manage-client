@@ -75,7 +75,7 @@ export default function NewTask({
           onChange={handleChange}
         />
       </label>
-      <input className='task-submit' type='submit' />
+      <input className='add-task-submit' type='submit' value='Add Task' />
     </form>
   );
 }

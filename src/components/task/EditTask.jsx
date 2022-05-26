@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import './styles.css'
 
 export default function EditTask({
   name,
@@ -63,7 +64,9 @@ export default function EditTask({
         />
       </label>
       <label>
-        <input
+        <textarea
+          rows="4"
+          cols="40"
           className='task-description'
           type='text'
           name='description'

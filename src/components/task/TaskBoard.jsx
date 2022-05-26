@@ -66,7 +66,6 @@ export default function TaskBoard() {
 
   const handleOnDragEnd = (result) => {
     const patchArr = [];
-
     if (!result.destination) return;
     const [source, setSource] = getStateForList(result.source.droppableId);
     const [destination, setDestination] = getStateForList(

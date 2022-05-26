@@ -93,6 +93,7 @@ ul {
     padding: 10px;
     align-items: flex-start;
     font-weight: bold;
+    gap: 5px;
 }
 
 .task-description, .task-name {
@@ -109,6 +110,19 @@ ul {
 .awaiting-review, .not-started, .in-progress, .done {
     background-color: rgba(173, 216, 230, 0.544);
     border: 1px solid black;
+}
+
+.edit-task-form {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+.task-submit {
+    width: 35px;
+}
+.add-task-submit {
+    font-size: inherit;    
+    width: 60px;
 }
 
 
