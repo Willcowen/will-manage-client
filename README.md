@@ -5,7 +5,7 @@ I've created a project management tool, which allows users to register, login an
 
 **Screenshots of the application.**
 
-Register!
+Register
 
 ![Register](https://user-images.githubusercontent.com/91130907/170462471-68115ba0-f660-415e-a501-862c79c429dd.png)
 
