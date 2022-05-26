@@ -4,7 +4,8 @@ Client: https://github.com/Willcowen/will-manage-client
 
 Server: https://github.com/Willcowen/will-manage-server
 
-*Project Description*
+**Project Description**
+
 I've created a project management tool, which allows users to register, login and keep track of their own workflow, via an up to date list of tasks. A user can add new tasks, edit or delete existing tasks.
 
 **Screenshots of the application.**
