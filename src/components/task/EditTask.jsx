@@ -71,7 +71,7 @@ export default function EditTask({
           onChange={handleChange}
         />
       </label>
-      <input className='task-submit' type='submit' />
+      <input className='task-submit' type='submit' value='Edit'/>
     </form>
   );
 }

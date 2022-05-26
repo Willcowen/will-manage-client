@@ -1,70 +1,48 @@
-# Getting Started with Create React App
+***WILL MANAGE***
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+*Project Description*
+I've created a project management tool, which allows users to register, login and keep track of their own workflow, via an up to date list of tasks. A user can add new tasks, edit or delete existing tasks.
 
-## Available Scripts
+*Screenshots of the application.*
 
-In the project directory, you can run:
+Register
 
-### `npm start`
+![](src%5Cscreenshots%5CRegister.png)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+Login
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+![](src%5Cscreenshots%5CLogin.png)
 
-### `npm test`
+App
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+![](src%5Cscreenshots%5Capp-main.png)
 
-### `npm run build`
+*Setup instructions*
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+To run this project locally on your machine, you'll need to do the following:
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+1. Clone this repository.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+2. Use npm install to install the projects dependencies from the package.json file.
 
-### `npm run eject`
+3. Go to the server repo here, and repeat steps 1 & 2: 
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+ https://github.com/Willcowen/will-manage-server
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+4. You will need a database set up for this, this project is using PostgreSQL. Instructions on how to set this up can be found here:
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+ https://www.learmoreseekmore.com/2020/09/postgresql-elephantsql-cloudserv.html
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+5. Go to the .env.example file on the server and update [YOUR-URL] with both main and shadow database URL's. If unsure, please refer to above link. Rename the .env.example file to .env
 
-## Learn More
+6. Then type npm start on both client and server directories to run the application.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+*Approach to implementation*
+The front end on this application was setup using react, react-router-dom, react-beautiful-dnd (drag and drop) and MUI. The back end was setup using express, postgres and prisma.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+*Learnings*
+The biggest challenge for me was learning a new library, IE react-beautiful-dnd. Whilst this was a pain to get up and running, it makes the app function in the way I wanted it to.
 
-### Code Splitting
+If I was to create something similar again, I would probably focus more on functionality, before styling the app in the later stages of its development. Set up an Endpoint on the back end, ensure it works with Thunder Client, or Postman/Insomnia then integrate the front end for this end point. This would allow for continuous integration between the front and the back end. Even if the app didn't quite look how I wanted it to at that moment. 
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Another challenge was figuring out the logic within rendering items correctly when a task or item is dragged and dropped.
