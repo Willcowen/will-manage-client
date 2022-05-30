@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './styles.css'
-const url = process.env.REACT_APP_API_URL || 'http://localhost:4000/'
+const url = process.env.REACT_APP_API_URL || 'http://localhost:4000'
 
 export default function EditTask({
   name,

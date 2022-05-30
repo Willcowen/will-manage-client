@@ -5,7 +5,7 @@ import { ReactComponent as AddIcon } from '../../images/add.svg';
 import NewTask from './NewTask';
 import Header from '../header/header';
 import ListItem from './ListItem';
-const url = process.env.REACT_APP_API_URL || 'http://localhost:4000/'
+const url = process.env.REACT_APP_API_URL || 'http://localhost:4000'
 
 export default function TaskBoard() {
   const [notStartedList, setNotStartedList] = useState([]);
