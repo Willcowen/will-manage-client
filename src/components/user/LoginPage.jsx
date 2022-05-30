@@ -4,6 +4,7 @@ import Button from '@mui/material/Button';
 import './styles.css';
 import { useNavigate, Link } from 'react-router-dom';
 import { ReactComponent as Logo } from '../header/mylogo.svg';
+const url = process.env.REACT_APP_API_URL
 
 export default function Login() {
   const initialFormData = {
@@ -37,7 +38,7 @@ export default function Login() {
       }),
     };
 
-    fetch('http://localhost:4000/user/login', options)
+    fetch(`${url}/user/login`, options)
       .then((res) => {
         res.json().then((json) => {
           if (res.ok) {

@@ -30,7 +30,7 @@ export default function Register() {
       }),
     };
 
-    fetch('http://localhost:4000/user', options)
+    fetch(`${url}/user`, options)
       .then(function(response) {
         return response.json();
       })
