@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './styles.css'
+const url = process.env.REACT_APP_API_URL || 'http://localhost:4000/'
 
 export default function EditTask({
   name,
@@ -29,7 +30,7 @@ export default function EditTask({
       }),
     };
 
-    fetch(`http://localhost:4000/task/${taskId}`, options)
+    fetch(`${url}/task/${taskId}`, options)
       .then(function(response) {
         return response.json();
       })

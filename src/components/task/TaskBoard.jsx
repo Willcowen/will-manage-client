@@ -5,6 +5,7 @@ import { ReactComponent as AddIcon } from '../../images/add.svg';
 import NewTask from './NewTask';
 import Header from '../header/header';
 import ListItem from './ListItem';
+const url = process.env.REACT_APP_API_URL || 'http://localhost:4000/'
 
 export default function TaskBoard() {
   const [notStartedList, setNotStartedList] = useState([]);
@@ -24,7 +25,7 @@ export default function TaskBoard() {
       },
     };
 
-    fetch('http://localhost:4000/task', options)
+    fetch(`${url}/task`, options)
       .then(function(response) {
         return response.json();
       })
@@ -126,7 +127,7 @@ export default function TaskBoard() {
       body: JSON.stringify(patchArr),
     };
 
-    fetch(`http://localhost:4000/tasks`, options).then(function(response) {
+    fetch(`${url}/tasks`, options).then(function(response) {
       return response.json();
     });
   };
@@ -143,7 +144,7 @@ export default function TaskBoard() {
       },
     };
 
-    fetch(`http://localhost:4000/task/${taskId}`, options)
+    fetch(`${url}/task/${taskId}`, options)
       .then(function(response) {
         return response.json();
       })

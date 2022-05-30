@@ -4,6 +4,7 @@ import Button from '@mui/material/Button';
 import './styles.css';
 import { useNavigate, Link } from 'react-router-dom';
 import { ReactComponent as Logo } from '../header/mylogo.svg';
+const url = process.env.REACT_APP_API_URL || 'http://localhost:4000/'
 export default function Register() {
   const navigate = useNavigate();
   const initialFormData = {

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './styles.css';
+const url = process.env.REACT_APP_API_URL || 'http://localhost:4000/'
 
 export default function NewTask({
   setShowAddTask,
@@ -38,7 +39,7 @@ export default function NewTask({
       }),
     };
 
-    fetch('http://localhost:4000/task', options)
+    fetch(`${url}/task`, options)
       .then((res) => res.json())
       .then((res) => {
         let addedTask = res.createdTask;
